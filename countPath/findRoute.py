@@ -106,7 +106,7 @@ def findRoute(st=[], dest=[]):
     if dest == []:
         return []
 
-    # st = [121.5444944, 25.01802]
+    # st = [121.276, 25.1033]
 
     global graph
     graph = Graph(10)
