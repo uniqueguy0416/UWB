@@ -55,31 +55,29 @@ class UWBpos:
         print("anchor 6 coordinate:({}, {})".format(x0, y0))
 
     def UWB_read(self):
-     if self.ser_success:
-        self.ser_UWB.flushInput()
-        rx = self.ser_UWB.read(66 * len(anchor_IDs))
-        rx = binascii.hexlify(rx).decode('utf-8')  # 轉換為 hex 字串
+        if self.ser_success:
+            self.ser_UWB.flushInput()
+            rx = self.ser_UWB.read(66 * len(anchor_IDs))
+            rx = binascii.hexlify(rx).decode('utf-8')
 
-        print("\n🔹 UWB 原始數據 (Raw Data):", rx)  # 新增這一行，顯示所有收到的數據
-        
-        for index, anchor_ID in enumerate(anchor_IDs):
-            if (rx != ' ' and rx.find(anchor_ID) >= 0 and rx.find(anchor_ID) <= (len(rx)-24)):
-                dis_index = rx.find(anchor_ID)
-                dis = rx[dis_index + 16: dis_index + 24]  # ToF distance
-                dis = swapEndianness(dis)
+            for index, anchor_ID in enumerate(anchor_IDs):
+                if (rx != ' ' and rx.find(anchor_ID) >= 0 and rx.find(anchor_ID) <= (len(rx)-24)):
+                    dis_index = rx.find(anchor_ID)
+                    dis = rx[dis_index + 16: dis_index + 24]  # ToF distance
+                    dis = swapEndianness(dis)
 
-                if dis != "":
-                    dis = int(dis, 16)
-                    if dis >= 32768:  # solve sign
+                    if dis != "":
+                        dis = int(dis, 16)
+                        if dis >= 32768:      # solve sign
+                            dis = 0
+                        print("dis[{}] read: {}".format(index, dis))
+                    else:
                         dis = 0
-                    print(f"🔹 Anchor ID {anchor_ID} 距離讀取: {dis}")
                 else:
                     dis = 0
-            else:
-                dis = 0
-            self.diss[index] = dis / 100
+                self.diss[index] = dis / 100
 
-     return self.diss
+        return self.diss
 
     def fake_read(self):
         random.seed()
