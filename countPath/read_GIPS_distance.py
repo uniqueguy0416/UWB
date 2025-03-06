@@ -164,7 +164,7 @@ if __name__ == '__main__':
             print("anchor ID 6: " + str(dis_to_tag[0]), end="\t")
             print("anchor ID 7: " + str(dis_to_tag[1]), end="\t")
             print("anchor ID 9: " + str(dis_to_tag[2]))
-            x, y = uwbpos.UWB_compute()
+            x, y = uwbpos.compute_CRS()  # 嘗試這個
             print("(x, y) = ({}, {})".format(x, y))
 
     except KeyboardInterrupt:
