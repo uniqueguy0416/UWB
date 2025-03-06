@@ -53,5 +53,6 @@ class Graph:
                 route.append(target)
             if target == 0:
                 break
+                print("🚀 findRoute.py 開始執行！")
 
         return route
