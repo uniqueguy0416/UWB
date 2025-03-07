@@ -56,11 +56,15 @@ class Graph:
 
         return route
 
-# ✅ 獲取 `server.py` 提供的 `destination`
+import requests
+
 def get_destination():
+    """✅ 從 `server.py` 取得目標位置"""
     url = "http://127.0.0.1:5500/dest"
+    data = {"dest": [25.1045, 121.2773]}  # ✅ 確保 `POST` 資料格式正確
+
     try:
-        response = requests.get(url)
+        response = requests.post(url, json=data)  # ✅ 用 `POST` 發送請求
         if response.status_code == 200:
             destination = response.json()
             print(f"✅ 從 `server.py` 取得目標位置: {destination}")
@@ -71,6 +75,7 @@ def get_destination():
     except requests.exceptions.RequestException as e:
         print(f"❌ 錯誤: 無法請求 `server.py`，錯誤訊息: {e}")
         return []
+
 
 def findRoute(st=[], dest=[]):
     print(f"📍 起點 (st): {st}")
