@@ -92,4 +92,18 @@ def recalibrate():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5500, debug=True)
+    # 1️⃣ 先從 UWB 讀取目前的位置 (`st`)
+    st = get_uwb_position()  # 這個函數應該從 `read_GIPS_distance.py` 取得 UWB 計算的座標
+    print(f"📍 目前 UWB 位置: {st}")
+
+    # 2️⃣ 向 `server.py` 取得 `destination`
+    destination = get_destination()
+    print(f"🎯 計算出的目標位置: {destination}")
+
+    # 3️⃣ 執行 `findRoute()` 計算最短路徑
+    route = findRoute(st=st, dest=destination)
+
+    # 4️⃣ 顯示計算結果
+    print("🚀 計算出的最佳路徑:")
+    print(route)
+
