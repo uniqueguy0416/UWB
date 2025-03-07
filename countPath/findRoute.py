@@ -145,6 +145,24 @@ def findRoute(st=[], dest=[]):
 
     print(finalRoute)
     return finalRoute
+import requests
+
+def get_uwb_position():
+    """✅ 向 `server.py` 取得當前 UWB 位置"""
+    url = "http://127.0.0.1:5500/pos"  # `server.py` 提供的 UWB 位置
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            position = response.json()  # 獲取座標
+            print(f"✅ 從 `server.py` 取得當前 UWB 位置: {position}")
+            return position
+        else:
+            print(f"❌ 無法從 `server.py` 取得 UWB 位置，錯誤碼: {response.status_code}")
+            return []
+    except requests.exceptions.RequestException as e:
+        print(f"❌ 錯誤: 無法請求 `server.py`，錯誤訊息: {e}")
+        return []
+
 
 
 if __name__ == "__main__":
