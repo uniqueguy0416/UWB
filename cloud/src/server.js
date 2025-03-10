@@ -1,7 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv-defaults';
-import PalletModel from './models/pallet.js';
+import PalletModel from '../models/pallet.js';  // 從 src 進入到 cloud/models/pallet.js
+
 
 
 dotenv.config();
