@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv-defaults';
+import PalletModel from './models/PalletModel';
 
 dotenv.config();
 
@@ -14,4 +15,21 @@ mongoose.connect(MONGO_URL)
 
 app.listen(PORT, () => {
   console.log(`🌍 伺服器運行在 http://localhost:${PORT}`);
+});
+
+app.post('/addPallet', async (req, res) => {
+  const palletData = new PalletModel({
+    type: '田字型',
+    content: '貨物A',
+    status: 'static',
+    position: [1, 2],
+    final_user: 'User1',
+  });
+
+  try {
+    const result = await palletData.save();  // 儲存資料
+    res.json(result);  // 回傳儲存的資料
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
