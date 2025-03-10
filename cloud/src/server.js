@@ -1,7 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv-defaults';
-import PalletModel from './models/PalletModel';
+import PalletModel from './models/pallet.js';
+
 
 dotenv.config();
 
