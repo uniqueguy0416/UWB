@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGO_URL = process.env.MONGO_URL;
 
-mongoose.connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGO_URL)
   .then(() => console.log('🚀 MongoDB 連接成功！'))
   .catch(err => console.error('❌ MongoDB 連接失敗:', err));
 
