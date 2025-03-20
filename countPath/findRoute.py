@@ -1,5 +1,5 @@
 import json
-import requests  # ✅ 用於從 `server.py` 獲取 `destination`
+
 
 class Graph:
     def __init__(self, size):
@@ -52,78 +52,100 @@ class Graph:
                 route.append(target)
             if target == 0:
                 break
-        print("🛤 計算出的路徑:", route)
+        print(route)
 
         return route
 
-import requests
+# check if two lines intersect
 
-def get_destination():
-    """✅ 從 `server.py` 取得目標位置"""
-    url = "http://127.0.0.1:5500/dest"
-    data = {"dest": [25.1045, 121.2773]}  # ✅ 確保 `POST` 資料格式正確
 
-    try:
-        response = requests.post(url, json=data)  # ✅ 用 `POST` 發送請求
-        if response.status_code == 200:
-            destination = response.json()
-            print(f"✅ 從 `server.py` 取得目標位置: {destination}")
-            return destination
-        else:
-            print(f"❌ 無法從 `server.py` 取得目標位置，錯誤碼: {response.status_code}")
-            return []
-    except requests.exceptions.RequestException as e:
-        print(f"❌ 錯誤: 無法請求 `server.py`，錯誤訊息: {e}")
-        return []
+def checkIntersection(A, B, C, D):
+    # Ax + By = C
+    a1 = B[1] - A[1]
+    b1 = A[0] - B[0]
+    c1 = a1 * A[0] + b1 * A[1]
+
+    a2 = D[1] - C[1]
+    b2 = C[0] - D[0]
+    c2 = a2 * C[0] + b2 * C[1]
+
+    determinant = a1 * b2 - a2 * b1
+
+    if determinant == 0:
+        return None  # lines are parallel
+
+    x = (b2 * c1 - b1 * c2) / determinant
+    y = (a1 * c2 - a2 * c1) / determinant
+    if (min(A[0], B[0]) <= x <= max(A[0], B[0]) and min(A[1], B[1]) <= y <= max(A[1], B[1]) and min(C[0], D[0]) <= x <= max(C[0], D[0]) and min(C[1], D[1]) <= y <= max(C[1], D[1])):
+        return True
+    return False
+
+# add edge between st and dst if there is no intersection
+
+
+def addEdge(st, dst, data):
+    inter = False
+    for box in data['box']:
+        if (inter):  # if intersection found
+            break
+        for k in range(4):
+
+            if (checkIntersection(graph.vertex_data[st], graph.vertex_data[dst], box['edge'][k], box['edge'][(k+1) % 4])):
+                graph.add_edge(st, dst, 0)
+                inter = True
+                break
+
+    if (not inter):
+        len = ((graph.vertex_data[st][0] - graph.vertex_data[dst][0])**2 +
+               (graph.vertex_data[st][1] - graph.vertex_data[dst][1])**2)**0.5
+        graph.add_edge(st, dst, len)
 
 
 def findRoute(st=[], dest=[]):
-    print(f"📍 起點 (st): {st}")
-    print(f"🎯 目標位置 (dest): {dest}, 類型: {type(dest)}")
-
-    if not dest:
-        print("❌ 錯誤: 目標位置 `dest` 為空，無法計算路徑")
+    print(dest, type(dest), "dest")
+    if dest == []:
         return []
+
+    # st = [121.5444944, 25.01802]
 
     global graph
     graph = Graph(10)
 
-    # 讀取 `points.json` 文件，確保節點資訊正確
+    # load information from json file
     with open('points.json', 'r') as file:
         data = json.load(file)
 
-    # ✅ 確保 `st` 和 `dest` 被加入圖中
+    # add vertex data
     graph.add_vertex_data(0, st)
     graph.add_vertex_data(9, dest)
     for node in data['cross']:
         graph.add_vertex_data(node['id'], node['pos'])
 
-    # ✅ 設定圖的邊
+    # add edges (original cross)
     for i in range(1, 9):
         for k in range(i + 1, 9):
             if k-i == 1 or k-i == 4:
                 if k != 5 or i != 4:
-                    print(f"📌 設置邊: {i} <-> {k}")
-                    length = ((graph.vertex_data[i][0] - graph.vertex_data[k][0])**2 +
-                              (graph.vertex_data[i][1] - graph.vertex_data[k][1])**2)**0.5
-                    graph.add_edge(i, k, length)
+                    print(i, k)
+                    len = ((graph.vertex_data[i][0] - graph.vertex_data[k][0])**2 +
+                           (graph.vertex_data[i][1] - graph.vertex_data[k][1])**2)**0.5
+                    graph.add_edge(i, k, len)
             else:
                 graph.add_edge(i, k, 0)
-
-    # ✅ 計算最短路徑
+    print(graph.adj_matrix)
+    # add edges (st and dest)
+    addEdge(0, 9, data)
+    for i in range(1, 9):
+        addEdge(0, i, data)
+        addEdge(9, i, data)
     route = graph.dijkstra(st)
-    finalRoute = [graph.vertex_data[i] for i in route]
+    finalRoute = []
+    for i in route:
+        finalRoute.append(graph.vertex_data[i])
 
-    print("🚀 計算出的最佳路徑:", finalRoute)
+    print(finalRoute)
     return finalRoute
 
+
 if __name__ == "__main__":
-    # ✅ 從 `server.py` 獲取 `destination`
-    destination = get_destination()
-    print(f"🎯 目標位置: {destination}")
-
-    # ✅ 確保 `findRoute()` 獲取 `destination`
-    route = findRoute(dest=destination)
-
-    print("🚀 最終計算出的最佳路徑:")
-    print(route)
+    findRoute()
