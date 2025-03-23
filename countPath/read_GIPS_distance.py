@@ -3,7 +3,7 @@ import binascii
 import numpy as np
 import random
 
-COM_PORT = '/dev/ttyUSB1'  # for rpi/wsl
+COM_PORT = '/dev/ttyUSB0'  # for rpi/wsl
 # COM_PORT = 'COM4'   # for computer
 
 anchor_IDs = ['0241000000000000', '0341000000000000', '0541000000000000']
