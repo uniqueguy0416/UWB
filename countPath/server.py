@@ -8,6 +8,7 @@ CORS(app)
 pos = UWBpos()
 
 
+print("🚀 正在執行這份 server.py（版本 A）")
 
 
 @app.route('/dest', methods=['POST'])
