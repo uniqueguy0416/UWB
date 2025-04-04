@@ -7,6 +7,11 @@ app = Flask(__name__)
 CORS(app)
 pos = UWBpos()
 
+@app.route('/ping')
+def ping():
+    return "pong"
+
+
 @app.route('/dest', methods=['POST'])
 def dest():
     print('Destination received')
