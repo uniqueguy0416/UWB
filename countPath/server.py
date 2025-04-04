@@ -7,9 +7,7 @@ app = Flask(__name__)
 CORS(app)
 pos = UWBpos()
 
-@app.route('/ping')
-def ping():
-    return "pong"
+
 
 
 @app.route('/dest', methods=['POST'])
@@ -27,19 +25,14 @@ def dest():
 def getPos():
     print("call getPos")
     try:
-        # 模擬假資料（先用 fake_read 確認程式不卡）
-        # pos.fake_read()  
-        # x, y = pos.compute_CRS()
-
-        # 實際用 UWB 定位（可能會卡住）
-        pos.UWB_read()
-        x, y = pos.UWB_read_compute_CRS_5()
-        
-        print(f"coordinate: {y}, {x}")
+        pos.fake_read()  # 模擬 UWB 資料
+        x, y = pos.compute_CRS()
+        print(f"FAKE coordinate: {y}, {x}")
         return jsonify([x, y]), 200
     except Exception as e:
         print("❌ Error in /pos:", e)
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/pos/anchor/<anchor_number>')
 def getAnchorPos(anchor_number):
