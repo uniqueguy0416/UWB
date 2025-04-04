@@ -23,20 +23,24 @@ def dest():
 
 @app.route('/pos')
 def getPos():
-    print("✅ [Flask] /pos 被呼叫了")
+    print("🛰️ /pos 被呼叫了")
+
     try:
-        print("➡️ 開始使用 fake_read()")
+        print("➡️ 呼叫 fake_read()")
         pos.fake_read()
         print("✅ fake_read() 完成")
 
-        print("➡️ 開始 compute_CRS()")
+        print("➡️ 呼叫 compute_CRS()")
         x, y = pos.compute_CRS()
-        print(f"✅ compute_CRS() 完成，結果為：({y}, {x})")
+        print("✅ compute_CRS() 完成")
+        print(f"🎯 結果: ({y}, {x})")
 
         return jsonify([x, y]), 200
+
     except Exception as e:
-        print("❌ /pos 發生錯誤：", e)
-        return jsonify({"error": str(e)}), 200
+        print("❌ /pos 執行失敗：", e)
+        return jsonify({"error": str(e)}), 500
+
 
 
 
