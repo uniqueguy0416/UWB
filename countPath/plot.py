@@ -32,8 +32,8 @@ def read_distance(ser):
         swapped = swap_endian(raw_hex)
         try:
             val = int(swapped, 16)
-            # 假設為毫米 → 轉為公分
-            cm_val = val / 10
+            
+            cm_val = val 
             print(f"[DEBUG] HEX: {raw_hex} → Endian轉換: {swapped} → 十進位: {val} → 距離: {cm_val:.2f} cm")
             return 0 if val >= 32768 else cm_val
         except:
