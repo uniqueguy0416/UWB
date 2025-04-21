@@ -1,38 +1,60 @@
 import csv
 import numpy as np
 from time import sleep
-from read_GIPS_distance import UWBpos  # 將這行改成你目前檔名，例如 uwb_module.py
+from read_GIPS_distance import UWBpos  # 根據你的檔名修改
 
-# 測試參數
-actual_distance_cm = 700  # 輸入你預設的真實距離
-measure_times = 20
+# ✅ 設定參數
+actual_distance_cm = 100  # 真實距離（cm）
+measure_times = 20  # 測量次數
 
 uwb = UWBpos()
 results = []
 
-print("🔍 開始測距...")
+print(f"📏 測試 anchor6 與目標間距離，預設真實距離為 {actual_distance_cm} cm")
+print("🔍 開始測距...\n")
 
 for i in range(measure_times):
-    dis_to_anchor = uwb.UWB_read()
-    dist = dis_to_anchor[0]  # anchor6
-    print(f"第 {i+1} 次：距離 = {dist:.2f} cm")
-    results.append(dist)
+    dis_to_anchor = uwb.UWB_read()  # 回傳格式：如 [713, 687, 50]
+
+    # 印出所有 anchor 資料
+    for idx, d in enumerate(dis_to_anchor):
+        print(f"dis[{idx}] read: {d}")
+
+    # 取得 anchor6（index=0）的距離原始值
+    raw_value = dis_to_anchor[0]
+
+    # 判斷是否是公尺還是公分：大於 10 通常為 cm，小於 10 為 m
+    if raw_value > 10:
+        dist_cm = raw_value
+    else:
+        dist_cm = raw_value * 100
+
+    # 忽略異常值
+    if dist_cm < 1:
+        print(f"⚠️ 第 {i+1} 次無效資料（{dist_cm:.2f} cm），跳過\n")
+        sleep(0.2)
+        continue
+
+    print(f"✅ 第 {i+1} 次距離：{dist_cm:.2f} cm\n")
+    results.append(dist_cm)
     sleep(0.2)
 
+# 統計分析
 mean = np.mean(results)
 error = mean - actual_distance_cm
 std = np.std(results)
 
-print("\n📊 測試結果：")
-print(f"平均距離 = {mean:.2f} cm")
-print(f"誤差 = {error:.2f} cm")
-print(f"標準差 = {std:.2f} cm")
+print("📊 測試結果統計：")
+print(f"🔢 有效測距次數：{len(results)}")
+print(f"📏 平均距離：{mean:.2f} cm")
+print(f"📉 誤差：{error:.2f} cm")
+print(f"📐 標準差：{std:.2f} cm\n")
 
-# 儲存結果
+# 存檔
 with open("uwb_precision_test.csv", "w", newline="") as f:
     writer = csv.writer(f)
     writer.writerow(["測距次數", "距離 (cm)"])
     for i, d in enumerate(results):
-        writer.writerow([i+1, d])
+        writer.writerow([i + 1, d])
 
-print("✅ 結果已儲存到 uwb_precision_test.csv")
+print("✅ 測距結果已儲存到：uwb_prrecision_test.csv")
