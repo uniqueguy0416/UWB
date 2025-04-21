@@ -7,14 +7,13 @@ matplotlib.use('Agg')  # 🧠 若使用 SSH/無螢幕請啟用這行
 import matplotlib.pyplot as plt
 import os
 import time
+from datetime import datetime
 
 # ---------- UWB 參數 ----------
 COM_PORT = '/dev/ttyUSB0'
 BAUD_RATE = 57600
 ANCHOR_ID = '0241000000000000'
 MEASURE_TIMES = 20
-OUTPUT_CSV = "uwb_precision_test.csv"
-OUTPUT_IMG = "plot_uwb_result.png"
 
 # ---------- 提取距離 ----------
 def swap_endian(hexstring):
@@ -39,6 +38,11 @@ def read_distance(ser):
 
 # ---------- 主測試函式 ----------
 def test_and_save(actual_distance_cm):
+    # 建立唯一時間戳記
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_csv = f"output/uwb_precision_{timestamp}.csv"
+    output_img = f"output/plot_uwb_result_{timestamp}.png"
+
     ser = serial.Serial(COM_PORT, BAUD_RATE, timeout=1)
     time.sleep(2)
     distances = []
@@ -66,6 +70,7 @@ def test_and_save(actual_distance_cm):
     print(f"標準差: {std:.2f} cm")
 
     # 儲存成 CSV
+    os.makedirs("output", exist_ok=True)
     df = pd.DataFrame({
         "測試次數": list(range(1, len(distances)+1)),
         "距離 (cm)": distances
@@ -76,11 +81,9 @@ def test_and_save(actual_distance_cm):
         "誤差(cm)": round(err, 2),
         "標準差": round(std, 2)
     }])
-    df_summary.to_csv(OUTPUT_CSV, index=False)
+    df_summary.to_csv(output_csv, index=False)
 
-    # ---------- 畫圖 ----------
-    os.makedirs("output", exist_ok=True)
-
+    # 畫圖儲存
     plt.figure(figsize=(8, 5))
     plt.plot(df["測試次數"], df["距離 (cm)"], marker='o')
     plt.axhline(actual_distance_cm, color='green', linestyle='--', label=f"實際距離: {actual_distance_cm}cm")
@@ -90,8 +93,9 @@ def test_and_save(actual_distance_cm):
     plt.ylabel("距離 (cm)")
     plt.legend()
     plt.grid(True)
-    plt.savefig(f"output/{OUTPUT_IMG}")
-    print(f"📊 圖片已儲存：output/{OUTPUT_IMG}")
+    plt.savefig(output_img)
+    print(f"📊 圖片已儲存：{output_img}")
+    print(f"📄 測試資料已儲存：{output_csv}")
 
 # ---------- 主程式 ----------
 if __name__ == "__main__":
