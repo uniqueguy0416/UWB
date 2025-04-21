@@ -1,7 +1,7 @@
 import csv
 import numpy as np
 from time import sleep
-from your_uwb_file import UWBpos  # 將這行改成你目前檔名，例如 uwb_module.py
+from read_GIPS_distance import UWBpos  # 將這行改成你目前檔名，例如 uwb_module.py
 
 # 測試參數
 actual_distance_cm = 100  # 輸入你預設的真實距離
