@@ -21,7 +21,7 @@ for i in range(measure_times):
     print(f"dis[0] read: {raw_value}")
 
     # 直接當作公分(cm)單位，不需轉換
-    dist_cm = raw_value
+    dist_cm = raw_value*100
 
     # 忽略異常值
     if dist_cm < 1:
