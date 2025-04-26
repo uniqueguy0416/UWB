@@ -16,14 +16,11 @@ print("🔍 開始測距...\n")
 for i in range(measure_times):
     dis_to_anchor = uwb.UWB_read()  # 回傳格式：如 [713, 687, 50]
 
-    # 印出所有 anchor 資料
-    for idx, d in enumerate(dis_to_anchor):
-        print(f"dis[{idx}] read: {d}")
-
-    # 取得 anchor6（index=0）的距離原始值
+    # 只取第 0 個（anchor6）
     raw_value = dis_to_anchor[0]
+    print(f"dis[0] read: {raw_value}")
 
-    # 判斷是否是公尺還是公分：大於 10 通常為 cm，小於 10 為 m
+    # 判斷單位：大於 10 通常為 cm，小於 10 為 m
     if raw_value > 10:
         dist_cm = raw_value
     else:
@@ -57,4 +54,4 @@ with open("uwb_precision_test.csv", "w", newline="") as f:
     for i, d in enumerate(results):
         writer.writerow([i + 1, d])
 
-print("✅ 測距結果已儲存到：uwb_prrecision_test.csv")
+print("✅ 測距結果已儲存到：uwb_precision_test.csv")
