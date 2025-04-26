@@ -4,7 +4,7 @@ from time import sleep
 from read_GIPS_distance import UWBpos  # 根據你的檔名修改
 
 # ✅ 設定參數
-actual_distance_cm = 1000  # 真實距離（cm）
+actual_distance_cm = 2000  # 真實距離（cm）
 measure_times = 20  # 測量次數
 
 uwb = UWBpos()
