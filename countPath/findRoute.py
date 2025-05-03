@@ -148,6 +148,4 @@ def findRoute(st=[], dest=[]):
 
 
 if __name__ == "__main__":
-    st = [121.4479, 25.1759]  # 起點：你的位置
-    dest = [121.4501, 25.1732]  # 終點：你想要去的棧板
-    findRoute(st, dest)
+    findRoute()
