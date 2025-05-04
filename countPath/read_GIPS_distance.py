@@ -97,7 +97,7 @@ class UWBpos:
         y = XC / self.XY / 2
         return x, y
 
-    def compute_CRS(self, scale=5):  # 可選擇加入 scale 參數
+    def compute_CRS(self, scale=1.1):  # 可選擇加入 scale 參數
         x, y = self.compute_relative()
         print("multiplier:{}, {}".format(x_multiplier, y_multiplier))
         # 原始轉換
