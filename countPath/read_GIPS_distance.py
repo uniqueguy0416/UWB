@@ -97,10 +97,15 @@ class UWBpos:
         y = XC / self.XY / 2
         return x, y
 
-    def compute_CRS(self):
+    def compute_CRS(self, scale=1.0):  # 可選擇加入 scale 參數
         x, y = self.compute_relative()
         print("multiplier:{}, {}".format(x_multiplier, y_multiplier))
-        return (x0 + (x / x_multiplier), y0 + (y / y_multiplier))
+        # 原始轉換
+        lat = x0 + (x / x_multiplier)
+        lon = y0 + (y / y_multiplier)
+        # ✅ 加入縮放因子
+        return (lat / scale, lon / scale)
+
 
     def UWB_read_compute_CRS_5(self):
         x, y = 0, 0
@@ -164,7 +169,7 @@ if __name__ == '__main__':
             print("anchor ID 6: " + str(dis_to_tag[0]), end="\t")
             print("anchor ID 7: " + str(dis_to_tag[1]), end="\t")
             print("anchor ID 9: " + str(dis_to_tag[2]))
-            x, y = uwbpos.UWB_compute()
+            x, y = uwbpos.compute_CRS()  
             print("(x, y) = ({}, {})".format(x, y))
 
     except KeyboardInterrupt:
